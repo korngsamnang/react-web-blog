@@ -1,16 +1,31 @@
-import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useContext, useState, useEffect } from "react";
 import { AppContext } from "../context/DataProvider";
 
 const Nav = () => {
     const { setSearch } = useContext(AppContext);
+
+    const [showSearch, setShowSearch] = useState(true);
+
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.pathname === "/") {
+            setShowSearch(true);
+        } else {
+            setShowSearch(false);
+        }
+    }, [location]);
+
     return (
         <nav>
-            <input
-                type="text"
-                placeholder="Search Posts..."
-                onChange={event => setSearch(event.target.value)}
-            />
+            {showSearch && (
+                <input
+                    type="text"
+                    placeholder="Search Posts..."
+                    onChange={event => setSearch(event.target.value)}
+                />
+            )}
             <ul>
                 <li>
                     <Link to="/">Home</Link>

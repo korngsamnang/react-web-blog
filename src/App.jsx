@@ -4,8 +4,6 @@ import About from "./pages/About";
 import Nav from "./components/Nav";
 import Header from "./components/Header";
 import PageNotFound from "./pages/PageNotFound";
-import { useState } from "react";
-import postData from "../postData/posts";
 import Home from "./pages/Home";
 import EachPostPage from "./pages/EachPostPage";
 import Footer from "./components/Footer";
@@ -15,9 +13,8 @@ import { DataProvider } from "./context/DataProvider";
 const App = () => {
     return (
         <>
-            <Header />
             <DataProvider>
-                <Nav />
+                <Header />
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/create-post" element={<CreatePost />} />
