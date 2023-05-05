@@ -1,8 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/DataProvider";
+import apiRequest from "../services/apiRequest.js";
 
 const EditPost = () => {
+    const API_URL = "http://localhost:3500/posts";
     const { posts, setPosts } = useContext(AppContext);
     const [editTitle, setEditTitle] = useState(" ");
     const [editBody, setEditBody] = useState("");
@@ -17,7 +19,7 @@ const EditPost = () => {
             setEditBody(post.body);
         }
     }, [post]);
-    const handleEdit = event => {
+    const handleEdit = async event => {
         event.preventDefault();
         if (!editTitle || !editBody) return;
 
@@ -28,6 +30,21 @@ const EditPost = () => {
         };
 
         setPosts(posts.map(p => (p.id.toString() === id ? editedPost : p)));
+
+        const updateRequestOptions = {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title: editTitle,
+                body: editBody,
+            }),
+        };
+        const reqUrl = `${API_URL}/${id}`;
+        const result = await apiRequest(reqUrl, updateRequestOptions);
+        if (result) alert(result);
+
         navigate("/");
     };
 

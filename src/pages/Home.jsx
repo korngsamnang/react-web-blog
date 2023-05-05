@@ -3,13 +3,19 @@ import { useContext } from "react";
 import { AppContext } from "../context/DataProvider";
 
 const Home = () => {
-    const { filterLists } = useContext(AppContext);
+    const { filterLists, isLoading } = useContext(AppContext);
     return (
         <div>
-            {filterLists.length ? (
-                filterLists.map(post => <EachPost post={post} key={post.id} />)
+            {!isLoading ? (
+                filterLists.length ? (
+                    filterLists.map(post => (
+                        <EachPost post={post} key={post.id} />
+                    ))
+                ) : (
+                    <p>No posts to display</p>
+                )
             ) : (
-                <p>No posts to display</p>
+                <p>Loading...</p>
             )}
         </div>
     );
