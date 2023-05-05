@@ -3,15 +3,17 @@ import { format } from "date-fns";
 import { v4 as uuid } from "uuid";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/DataProvider";
+import apiRequest from "../services/apiRequest.js";
 
 const CreatePost = () => {
+    const API_URL = "http://localhost:3500/posts";
     const { posts, setPosts } = useContext(AppContext);
 
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = event => {
+    const handleSubmit = async event => {
         event.preventDefault();
         if (!title || !body) return;
 
@@ -24,6 +26,17 @@ const CreatePost = () => {
             datetime,
         };
         setPosts([postObj, ...posts]);
+
+        const postRequestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(postObj),
+        };
+        const result = await apiRequest(API_URL, postRequestOptions);
+        if (result) alert(result);
+
         navigate("/");
     };
 
