@@ -1,10 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/DataProvider";
-import apiRequest from "../services/apiRequest.js";
+import api from "../services/apiRequest";
 
 const EditPost = () => {
-    const API_URL = "http://localhost:3500/posts";
     const { posts, setPosts } = useContext(AppContext);
     const [editTitle, setEditTitle] = useState(" ");
     const [editBody, setEditBody] = useState("");
@@ -23,29 +22,18 @@ const EditPost = () => {
         event.preventDefault();
         if (!editTitle || !editBody) return;
 
-        const editedPost = {
-            ...post,
-            title: editTitle,
-            body: editBody,
-        };
-
-        setPosts(posts.map(p => (p.id.toString() === id ? editedPost : p)));
-
-        const updateRequestOptions = {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
+        try {
+            const response = await api.patch(`/posts/${id}`, {
                 title: editTitle,
                 body: editBody,
-            }),
-        };
-        const reqUrl = `${API_URL}/${id}`;
-        const result = await apiRequest(reqUrl, updateRequestOptions);
-        if (result) alert(result);
-
-        navigate("/");
+            });
+            setPosts(
+                posts.map(p => (p.id.toString() === id ? response.data : p))
+            );
+            navigate("/");
+        } catch (err) {
+            console.log(`Error :${err.message}`);
+        }
     };
 
     return (

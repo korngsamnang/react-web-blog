@@ -1,12 +1,5 @@
-const apiRequest = async (url = "", optionalObj = null, errMsg = null) => {
-    try {
-        const response = await fetch(url, optionalObj);
-        if (!response.ok) throw Error("Please reload the app");
-    } catch (err) {
-        errMsg = err.message;
-    } finally {
-        return errMsg;
-    }
-};
+import axios from "axios";
 
-export default apiRequest;
+export default axios.create({
+    baseURL: "http://localhost:3500",
+});

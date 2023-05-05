@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import api from "../services/apiRequest";
 
 export const AppContext = createContext({});
 
@@ -11,13 +12,18 @@ export const DataProvider = ({ children }) => {
         setIsLoading(true);
         const getPost = async () => {
             try {
-                const response = await fetch("http://localhost:3500/posts");
-                if (!response.ok) throw Error("Did not receive expected data");
-                const data = await response.json();
-                setPosts(data.reverse());
+                const response = await api.get("/posts");
+                setPosts(response.data.reverse());
                 setIsLoading(false);
             } catch (err) {
-                alert(err.message);
+                if (err.response) {
+                    //Not in the 200 response range
+                    console.log(err.response.data);
+                    console.log(err.response.status);
+                    console.log(err.response.headers);
+                } else {
+                    console.log(`Error: ${err.message}`);
+                }
             }
         };
         getPost();

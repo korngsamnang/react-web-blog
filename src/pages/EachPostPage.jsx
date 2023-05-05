@@ -2,28 +2,25 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import { useContext } from "react";
 import { AppContext } from "../context/DataProvider";
-import apiRequest from "../services/apiRequest.js";
+import api from "../services/apiRequest";
 
 const EachPostPage = () => {
     const { posts, setPosts, isLoading } = useContext(AppContext);
 
-    const API_URL = "http://localhost:3500/posts";
     const { id } = useParams();
     const navigate = useNavigate();
 
     const post = posts.find(p => p.id.toString() === id);
 
     const handleDelete = async () => {
-        const updatedList = posts.filter(p => p.id.toString() !== id);
-        setPosts(updatedList);
-
-        const deleteRequestOptions = {
-            method: "DELETE",
-        };
-        const reqUrl = `${API_URL}/${id}`;
-        const result = await apiRequest(reqUrl, deleteRequestOptions);
-        if (result) alert(result);
-        navigate("/");
+        try {
+            await api.delete(`/posts/${id}`);
+            const updatedList = posts.filter(p => p.id.toString() !== id);
+            setPosts(updatedList);
+            navigate("/");
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
     };
 
     return (
